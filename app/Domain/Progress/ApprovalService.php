@@ -61,7 +61,9 @@ class ApprovalService
                 }
             }
 
-            EvaluateWorkAlerts::dispatch($work->id)->afterCommit();
+            // Dispatch (and take the unique lock) only after commit: a lock collision on the database
+            // cache store would otherwise abort this Postgres transaction.
+            DB::afterCommit(fn () => EvaluateWorkAlerts::dispatch($work->id));
 
             return $update;
         });

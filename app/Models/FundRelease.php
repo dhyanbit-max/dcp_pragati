@@ -7,6 +7,7 @@ use App\Jobs\EvaluateWorkAlerts;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -31,7 +32,8 @@ class FundRelease extends Model
             Work::withoutGlobalScopes()->whereKey($release->work_id)->update([
                 'released_total' => static::withoutGlobalScopes()->where('work_id', $release->work_id)->sum('amount'),
             ]);
-            EvaluateWorkAlerts::dispatch($release->work_id)->afterCommit();
+            // Lock + dispatch after commit; see ApprovalService::approve().
+            DB::afterCommit(fn () => EvaluateWorkAlerts::dispatch($release->work_id));
         };
         static::saved($sync);
         static::deleted($sync);
