@@ -38,6 +38,7 @@
                 <a href="{{ route('grievances.create') }}" @class(['hidden rounded-md px-3 py-1.5 font-medium sm:inline-block', 'bg-accent-soft text-accent' => request()->routeIs('grievances.create'), 'text-ink-2 hover:bg-surface-2 hover:text-ink' => ! request()->routeIs('grievances.create')])>{{ __('Raise a grievance') }}</a>
                 <a href="{{ route('grievances.track') }}" @class(['hidden rounded-md px-3 py-1.5 font-medium sm:inline-block', 'bg-accent-soft text-accent' => request()->routeIs('grievances.track'), 'text-ink-2 hover:bg-surface-2 hover:text-ink' => ! request()->routeIs('grievances.track')])>{{ __('Track') }}</a>
             @endif
+            <a href="{{ route('manual') }}" @class(['hidden rounded-md px-3 py-1.5 font-medium sm:inline-block', 'bg-accent-soft text-accent' => request()->routeIs('manual'), 'text-ink-2 hover:bg-surface-2 hover:text-ink' => ! request()->routeIs('manual')])>{{ __('User manual') }}</a>
             <a href="{{ auth()->check() ? route('home') : route('login') }}" class="btn-secondary ml-1 py-1.5 text-sm">
                 <svg aria-hidden="true" viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
                 {{ auth()->check() ? __('Open DCP Pragati') : __('Staff sign in') }}
@@ -63,6 +64,7 @@
                     <li><a class="hover:text-accent hover:underline" href="{{ route('grievances.create') }}">{{ __('Raise a grievance') }}</a></li>
                     <li><a class="hover:text-accent hover:underline" href="{{ route('grievances.track') }}">{{ __('Track a grievance') }}</a></li>
                 @endif
+                <li><a class="hover:text-accent hover:underline" href="{{ route('manual') }}">{{ __('User manual') }}</a></li>
                 <li><a class="hover:text-accent hover:underline" href="{{ route('home') }}#privacy">{{ __('Privacy') }}</a></li>
             </ul>
         </div>
@@ -71,6 +73,7 @@
             <ul class="mt-1 space-y-1">
                 <li><a class="hover:text-accent hover:underline" href="{{ route('login') }}">{{ __('Staff sign in') }}</a></li>
                 <li><a class="hover:text-accent hover:underline" href="{{ route('password.setup') }}">{{ __('Set or reset your password') }}</a></li>
+                <li><a class="hover:text-accent hover:underline" href="{{ route('manual') }}#dpc">{{ __('Approving updates') }}</a></li>
             </ul>
         </div>
     </div>

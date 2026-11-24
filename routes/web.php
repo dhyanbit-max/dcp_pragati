@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public pages (docs/04 §4, docs/20). Feature-flagged; the landing page itself is always there.
 Route::get('/', LandingController::class)->name('home');
+Route::view('manual', 'public.manual')->name('manual');
 Route::middleware(['feature:grievances', 'throttle:60,1'])->group(function () {
     Route::get('grievances/new', GrievanceForm::class)->name('grievances.create');
     Route::get('grievances/track', GrievanceTrack::class)->name('grievances.track');

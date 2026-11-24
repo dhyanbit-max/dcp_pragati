@@ -44,3 +44,14 @@ it('sends signed-in staff to the dashboard, and field users to the map', functio
     $this->actingAs(userWithRole(Role::STATE_VIEWER))->get('/')->assertRedirect(route('dashboard'));
     $this->actingAs(userWithRole(Role::FIELD_USER))->get('/')->assertRedirect(route('map'));
 });
+
+it('shows the user manual to guests and links it from the landing page', function () {
+    $this->get('/')->assertOk()->assertSee(route('manual'));
+
+    $this->get('/manual')
+        ->assertOk()
+        ->assertSee('User manual')
+        ->assertSee('District Planning Cell: approvals')
+        ->assertSee('R12')
+        ->assertSee(route('grievances.create'));
+});

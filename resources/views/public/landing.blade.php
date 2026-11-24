@@ -28,6 +28,10 @@
                     @else
                         <a href="{{ route('login') }}" class="btn-primary px-5 py-2.5 text-base">{{ __('Staff sign in') }}</a>
                     @endif
+                    <a href="{{ route('manual') }}" class="btn-secondary px-5 py-2.5 text-base">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
+                        {{ __('User manual') }}
+                    </a>
                 </div>
                 @if ($stats)
                     <p class="mt-5 text-xs text-ink-3">
