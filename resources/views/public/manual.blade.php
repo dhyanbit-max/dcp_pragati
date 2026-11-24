@@ -1,6 +1,7 @@
 @php
     $sections = [
         'start' => __('Getting started'),
+        ...(app()->isProduction() ? [] : ['demo' => __('Demo sign-in')]),
         'citizens' => __('For citizens'),
         'field' => __('Field staff: the mobile app'),
         'dpc' => __('District Planning Cell: approvals'),
@@ -64,6 +65,7 @@
                     <li>{{ __('You land on your dashboard. You only see works in your own district, co-district or agency.') }}</li>
                 </ol>
                 <p>{!! __('First time, or forgot your password? Use :link. A code is sent to your registered mobile number.', ['link' => '<a class="text-accent underline" href="'.route('password.setup').'">'.e(__('Set or reset your password')).'</a>']) !!}</p>
+                <x-demo-logins id="demo" class="mt-4 scroll-mt-24" />
                 <h3>{{ __('Language') }}</h3>
                 <p>{{ __('Choose English, Assamese or Bengali from the language menu at the top of any page.') }}</p>
             </section>

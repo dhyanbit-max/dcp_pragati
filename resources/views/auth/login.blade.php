@@ -22,4 +22,5 @@
     </form>
     <p class="mt-4 text-xs text-ink-3">{{ __('We will send a one-time code to your mobile to finish signing in.') }}</p>
     <a href="{{ route('password.setup') }}" class="mt-2 inline-block text-sm text-accent hover:underline">{{ __('First time here, or forgot your password?') }}</a>
+    <x-demo-logins fill class="mt-6" />
 </x-layouts.guest>

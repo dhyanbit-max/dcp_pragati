@@ -55,3 +55,12 @@ it('shows the user manual to guests and links it from the landing page', functio
         ->assertSee('R12')
         ->assertSee(route('grievances.create'));
 });
+
+it('lists the demo sign-ins on the login page and manual outside production only', function () {
+    $this->get('/login')->assertOk()->assertSee('Demo sign-in')->assertSee('data-demo-mobile="9000000002"', false);
+    $this->get('/manual')->assertOk()->assertSee('Demo sign-in')->assertSee('9000001124');
+
+    app()->detectEnvironment(fn () => 'production');
+    $this->get('/login')->assertOk()->assertDontSee('Demo sign-in');
+    $this->get('/manual')->assertOk()->assertDontSee('Demo sign-in')->assertDontSee('9000000001');
+});
