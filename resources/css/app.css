@@ -1,0 +1,204 @@
+@import 'tailwindcss';
+
+/* Self-hosted fonts (no third-party CDN on government hosting). Noto Sans Bengali covers Assamese and Bengali script. */
+@import '@fontsource/noto-sans/400.css';
+@import '@fontsource/noto-sans/500.css';
+@import '@fontsource/noto-sans/600.css';
+@import '@fontsource/noto-sans/700.css';
+@import '@fontsource/noto-sans-bengali/400.css';
+@import '@fontsource/noto-sans-bengali/600.css';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/livewire/src/**/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---- Design tokens -------------------------------------------------------
+   Neutrals + one accent. Chart series and status colours follow the dataviz
+   reference palette; status colours always ship with an icon and a label. */
+:root {
+    color-scheme: light;
+    --bg: #f6f6f4;
+    --surface: #ffffff;
+    --surface-2: #f0efec;
+    --border: #e2e1dc;
+    --border-strong: #c9c8c1;
+    --text: #1a1a19;
+    --text-2: #52514e;
+    --text-3: #75746f;
+    --accent: #1c5cab;
+    --accent-hover: #184f95;
+    --accent-soft: #e6effb;
+    --on-accent: #ffffff;
+    --focus: #2a78d6;
+
+    --series-1: #2a78d6; /* physical % */
+    --series-2: #eb6834; /* financial % */
+    --chart-surface: #fcfcfb;
+    --grid: #e7e6e1;
+
+    --good: #0ca30c;
+    --good-text: #006300;
+    --good-soft: #e5f4e5;
+    --warning: #fab219;
+    --warning-text: #7a5200;
+    --warning-soft: #fdf3dc;
+    --serious: #ec835a;
+    --serious-text: #9a3c14;
+    --serious-soft: #fcebe3;
+    --critical: #d03b3b;
+    --critical-text: #a32626;
+    --critical-soft: #fbe7e7;
+    --neutral-soft: #efeeea;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --bg: #121211;
+        --surface: #1a1a19;
+        --surface-2: #232322;
+        --border: #30302e;
+        --border-strong: #45453f;
+        --text: #f0efec;
+        --text-2: #c3c2b7;
+        --text-3: #9a998f;
+        --accent: #5598e7;
+        --accent-hover: #6da7ec;
+        --accent-soft: #1d2a3b;
+        --on-accent: #0b0b0b;
+        --focus: #6da7ec;
+        --series-1: #3987e5;
+        --series-2: #d95926;
+        --chart-surface: #1a1a19;
+        --grid: #2c2c2a;
+        --good-text: #5fd35f;
+        --good-soft: #17301a;
+        --warning-text: #fbc95a;
+        --warning-soft: #33290f;
+        --serious-text: #f2a585;
+        --serious-soft: #3a2117;
+        --critical-text: #ee8a8a;
+        --critical-soft: #3a1818;
+        --neutral-soft: #262624;
+    }
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #121211;
+    --surface: #1a1a19;
+    --surface-2: #232322;
+    --border: #30302e;
+    --border-strong: #45453f;
+    --text: #f0efec;
+    --text-2: #c3c2b7;
+    --text-3: #9a998f;
+    --accent: #5598e7;
+    --accent-hover: #6da7ec;
+    --accent-soft: #1d2a3b;
+    --on-accent: #0b0b0b;
+    --focus: #6da7ec;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --chart-surface: #1a1a19;
+    --grid: #2c2c2a;
+    --good-text: #5fd35f;
+    --good-soft: #17301a;
+    --warning-text: #fbc95a;
+    --warning-soft: #33290f;
+    --serious-text: #f2a585;
+    --serious-soft: #3a2117;
+    --critical-text: #ee8a8a;
+    --critical-soft: #3a1818;
+    --neutral-soft: #262624;
+}
+
+@theme inline {
+    --font-sans: 'Noto Sans', 'Noto Sans Bengali', ui-sans-serif, system-ui, sans-serif;
+    --color-bg: var(--bg);
+    --color-surface: var(--surface);
+    --color-surface-2: var(--surface-2);
+    --color-line: var(--border);
+    --color-line-strong: var(--border-strong);
+    --color-ink: var(--text);
+    --color-ink-2: var(--text-2);
+    --color-ink-3: var(--text-3);
+    --color-accent: var(--accent);
+    --color-accent-hover: var(--accent-hover);
+    --color-accent-soft: var(--accent-soft);
+    --color-on-accent: var(--on-accent);
+    --color-good: var(--good-text);
+    --color-good-soft: var(--good-soft);
+    --color-warning: var(--warning-text);
+    --color-warning-soft: var(--warning-soft);
+    --color-serious: var(--serious-text);
+    --color-serious-soft: var(--serious-soft);
+    --color-critical: var(--critical-text);
+    --color-critical-soft: var(--critical-soft);
+    --color-neutral-soft: var(--neutral-soft);
+}
+
+html {
+    background: var(--bg);
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-feature-settings: 'tnum' 1;
+}
+
+:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+/* ---- Small component utilities (Tailwind 4: @utility so they can be @apply-ed) ---- */
+@utility card {
+    @apply rounded-lg border border-line bg-surface;
+}
+
+@utility btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+@utility btn-primary {
+    @apply btn bg-accent text-on-accent hover:bg-accent-hover;
+}
+
+@utility btn-secondary {
+    @apply btn border border-line-strong bg-surface text-ink hover:bg-surface-2;
+}
+
+@utility btn-danger {
+    @apply btn border border-line-strong bg-surface text-critical hover:bg-critical-soft;
+}
+
+@utility field {
+    @apply block w-full rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-3 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25;
+}
+
+@utility label {
+    @apply mb-1 block text-sm font-medium text-ink-2;
+}
+
+@utility th {
+    @apply px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-ink-3 whitespace-nowrap;
+}
+
+@utility td {
+    @apply px-3 py-2.5 text-sm text-ink align-top;
+}
+
+@utility num {
+    @apply text-right tabular-nums;
+}
+
+@utility chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap;
+}
+

@@ -1,0 +1,62 @@
+{
+  "_comment": "Shared rule fixtures. The PHP engine (tests/Unit/RuleFixturesTest.php) and the Dart mirror in the field app must both pass every case. Money in paise.",
+  "base": {
+    "work": { "sanctioned": 10000000, "released": 5000000, "has_site": true, "site_radius_m": 200 },
+    "update": { "stage_item_id": 3, "stage_min_pct": 35, "stage_max_pct": 90, "physical_pct": 50, "spent_cumulative": 4000000,
+                "captured_at": "2026-12-01T10:00:00+05:30", "received_at": "2026-12-01T10:05:00+05:30", "device_accuracy_m": 10 },
+    "last_accepted": { "stage_item_id": 2, "physical_pct": 30, "spent_cumulative": 2500000, "captured_at": "2026-11-20T10:00:00+05:30" },
+    "photos": [
+      { "has_location": true, "distance_m": 40, "accuracy_m": 8, "taken_at": "2026-12-01T09:55:00+05:30" },
+      { "has_location": true, "distance_m": 60, "accuracy_m": 9, "taken_at": "2026-12-01T09:56:00+05:30" }
+    ],
+    "history": [ { "physical_pct": 30, "spent_cumulative": 2500000 } ]
+  },
+  "cases": [
+    { "name": "base update passes every rule", "rule": "*", "expect": "pass" },
+
+    { "name": "R01 spend above release fails", "rule": "R01", "patch": { "update": { "spent_cumulative": 5000001 } }, "expect": "fail" },
+    { "name": "R01 spend equal to release passes", "rule": "R01", "patch": { "update": { "spent_cumulative": 5000000 } }, "expect": "pass" },
+
+    { "name": "R02 lower percent fails", "rule": "R02", "patch": { "update": { "physical_pct": 29.5 } }, "expect": "fail" },
+    { "name": "R02 same percent passes", "rule": "R02", "patch": { "update": { "physical_pct": 30 } }, "expect": "pass" },
+    { "name": "R02 first update passes", "rule": "R02", "patch": { "last_accepted": null }, "expect": "pass" },
+
+    { "name": "R03 photo outside radius fails", "rule": "R03", "patch": { "photos": [ { "has_location": true, "distance_m": 450, "accuracy_m": 8, "taken_at": "2026-12-01T09:55:00+05:30" } ] }, "expect": "fail" },
+    { "name": "R03 photo without location fails", "rule": "R03", "patch": { "photos": [ { "has_location": false, "taken_at": "2026-12-01T09:55:00+05:30" } ] }, "expect": "fail" },
+    { "name": "R03 param radius overrides work radius", "rule": "R03", "params": { "radius_m": 500 }, "patch": { "photos": [ { "has_location": true, "distance_m": 450, "accuracy_m": 8, "taken_at": "2026-12-01T09:55:00+05:30" } ] }, "expect": "pass" },
+    { "name": "R03 skipped when work has no site", "rule": "R03", "patch": { "work": { "has_site": false }, "photos": [ { "has_location": true, "distance_m": null, "taken_at": "2026-12-01T09:55:00+05:30" } ] }, "expect": "pass" },
+
+    { "name": "R04 one photo with progress change fails", "rule": "R04", "patch": { "photos": [ { "has_location": true, "distance_m": 40, "accuracy_m": 8, "taken_at": "2026-12-01T09:55:00+05:30" } ] }, "expect": "fail" },
+    { "name": "R04 no photos and no change passes", "rule": "R04", "patch": { "update": { "physical_pct": 30, "stage_item_id": 2 }, "photos": [] }, "expect": "pass" },
+
+    { "name": "R05 photo older than 3 days fails", "rule": "R05", "patch": { "photos": [ { "has_location": true, "distance_m": 40, "taken_at": "2026-11-27T09:00:00+05:30" } ] }, "expect": "fail" },
+    { "name": "R05 photo before last accepted update fails", "rule": "R05", "params": { "max_age_days": 30 }, "patch": { "photos": [ { "has_location": true, "distance_m": 40, "taken_at": "2026-11-19T09:00:00+05:30" } ] }, "expect": "fail" },
+    { "name": "R05 photo in the future fails", "rule": "R05", "patch": { "photos": [ { "has_location": true, "distance_m": 40, "taken_at": "2026-12-02T10:00:00+05:30" } ] }, "expect": "fail" },
+    { "name": "R05 photo without time fails", "rule": "R05", "patch": { "photos": [ { "has_location": true, "distance_m": 40 } ] }, "expect": "fail" },
+
+    { "name": "R06 duplicate photo fails", "rule": "R06", "patch": { "photos": [ { "has_location": true, "distance_m": 40, "taken_at": "2026-12-01T09:55:00+05:30", "is_duplicate": true } ] }, "expect": "fail" },
+
+    { "name": "R07 spend 26 points ahead fails", "rule": "R07", "patch": { "update": { "physical_pct": 14, "spent_cumulative": 4000000, "stage_min_pct": 0, "stage_max_pct": 40 } }, "expect": "fail" },
+    { "name": "R07 spend exactly 25 points ahead passes", "rule": "R07", "patch": { "update": { "physical_pct": 15, "spent_cumulative": 4000000 } }, "expect": "pass" },
+
+    { "name": "R08 percent below stage range fails", "rule": "R08", "patch": { "update": { "physical_pct": 20 } }, "expect": "fail" },
+    { "name": "R08 percent at stage max passes", "rule": "R08", "patch": { "update": { "physical_pct": 90 } }, "expect": "pass" },
+
+    { "name": "R09 spend up, percent flat over 2 updates fails", "rule": "R09",
+      "patch": { "update": { "physical_pct": 30, "spent_cumulative": 3500000 },
+                 "history": [ { "physical_pct": 30, "spent_cumulative": 3000000 }, { "physical_pct": 30, "spent_cumulative": 2000000 } ] },
+      "expect": "fail" },
+    { "name": "R09 only one flat step passes", "rule": "R09",
+      "patch": { "update": { "physical_pct": 30, "spent_cumulative": 3500000 },
+                 "history": [ { "physical_pct": 30, "spent_cumulative": 3000000 }, { "physical_pct": 20, "spent_cumulative": 2000000 } ] },
+      "expect": "pass" },
+
+    { "name": "R10 low GPS accuracy fails", "rule": "R10", "patch": { "photos": [ { "has_location": true, "distance_m": 40, "accuracy_m": 80, "taken_at": "2026-12-01T09:55:00+05:30" } ] }, "expect": "fail" },
+    { "name": "R10 mock location fails", "rule": "R10", "patch": { "photos": [ { "has_location": true, "distance_m": 40, "accuracy_m": 5, "taken_at": "2026-12-01T09:55:00+05:30", "is_mocked": true } ] }, "expect": "fail" },
+
+    { "name": "R12 uploaded (non-camera) photo fails", "rule": "R12", "patch": { "photos": [ { "has_location": true, "distance_m": 40, "taken_at": "2026-12-01T09:55:00+05:30", "from_camera": false } ] }, "expect": "fail" },
+    { "name": "R12 camera photos pass", "rule": "R12", "expect": "pass" },
+
+    { "name": "R11 spend above sanction fails", "rule": "R11", "patch": { "work": { "released": 20000000 }, "update": { "spent_cumulative": 10000001 } }, "expect": "fail" }
+  ]
+}
